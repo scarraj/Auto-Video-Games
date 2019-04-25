@@ -1,0 +1,12 @@
+ <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+   <Target Name="Clean">
+     <ItemGroup>
+      <BinFiles Include="bin\*.*" />
+     </ItemGroup>
+     <Delete Files="@(BinFiles)" />
+   </Target>
+ </Project>
+ 
+ <Target Name="Compile" DependsOnTargets="Clean">
+   <MSBuild Projects="BuildDemoSite.csproj" />
+</Target>
