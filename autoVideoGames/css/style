@@ -1,0 +1,6 @@
+#header{
+    background-image: url('http://www.mweb.co.za/DesktopModules/DigArticle/MediaHandler.ashx?portalid=20&moduleid=5259&mediaid=57223&width=665&height=400');
+    width: 100%;
+    height: auto;
+    background-size: cover;
+}
