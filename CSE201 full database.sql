@@ -296,6 +296,15 @@ AS
 	ORDER BY RoleId		
 GO
 
+CREATE PROCEDURE [dbo].[deleteComment]
+	@gameId int,
+	@email nvarchar(256)
+AS
+	DELETE FROM dbo.Commonts
+	WHERE gameId = @gameId AND
+		  votedUserId = (SELECT Id FROM AspNetUsers WHERE Email = @email)
+GO
+
 INSERT AspNetUserRoles(UserId, RoleId) VALUES
 ('83ad586f-6f40-4643-88cc-ddabc08d6b72', '1')
 
