@@ -32,6 +32,16 @@ CREATE TABLE [dbo].[Games] (
 );
 GO
 
+/*pre created table*/
+CREATE TABLE [dbo].[__MigrationHistory] (
+    [MigrationId]    NVARCHAR (150)  NOT NULL,
+    [ContextKey]     NVARCHAR (300)  NOT NULL,
+    [Model]          VARBINARY (MAX) NOT NULL,
+    [ProductVersion] NVARCHAR (32)   NOT NULL,
+    CONSTRAINT [PK_dbo.__MigrationHistory] PRIMARY KEY CLUSTERED ([MigrationId] ASC, [ContextKey] ASC)
+);
+GO
+
 CREATE TABLE [dbo].[AspNetRoles] (
     [Id]   NVARCHAR (128) NOT NULL,
     [Name] NVARCHAR (256) NOT NULL,
@@ -44,12 +54,38 @@ CREATE UNIQUE NONCLUSTERED INDEX [RoleNameIndex]
     ON [dbo].[AspNetRoles]([Name] ASC);
 GO
 
+CREATE TABLE [dbo].[AspNetUserClaims] (
+    [Id]         INT            IDENTITY (1, 1) NOT NULL,
+    [UserId]     NVARCHAR (128) NOT NULL,
+    [ClaimType]  NVARCHAR (MAX) NULL,
+    [ClaimValue] NVARCHAR (MAX) NULL,
+    CONSTRAINT [PK_dbo.AspNetUserClaims] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_UserId]
+    ON [dbo].[AspNetUserClaims]([UserId] ASC);
+GO
+
+CREATE TABLE [dbo].[AspNetUserLogins] (
+    [LoginProvider] NVARCHAR (128) NOT NULL,
+    [ProviderKey]   NVARCHAR (128) NOT NULL,
+    [UserId]        NVARCHAR (128) NOT NULL,
+    CONSTRAINT [PK_dbo.AspNetUserLogins] PRIMARY KEY CLUSTERED ([LoginProvider] ASC, [ProviderKey] ASC, [UserId] ASC)
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_UserId]
+    ON [dbo].[AspNetUserLogins]([UserId] ASC);
+
+GO
+
 CREATE TABLE [dbo].[AspNetUserRoles] (
     [UserId] NVARCHAR (128) NOT NULL,
     [RoleId] NVARCHAR (128) NOT NULL,
-    CONSTRAINT [PK_dbo.AspNetUserRoles] PRIMARY KEY CLUSTERED ([UserId] ASC, [RoleId] ASC),
-    CONSTRAINT [FK_dbo.AspNetUserRoles_dbo.AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[AspNetRoles] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_dbo.AspNetUserRoles_dbo.AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [dbo].[AspNetUsers] ([Id]) ON DELETE CASCADE
+    CONSTRAINT [PK_dbo.AspNetUserRoles] PRIMARY KEY CLUSTERED ([UserId] ASC, [RoleId] ASC)
 );
 
 
@@ -61,6 +97,7 @@ CREATE NONCLUSTERED INDEX [IX_UserId]
 GO
 CREATE NONCLUSTERED INDEX [IX_RoleId]
     ON [dbo].[AspNetUserRoles]([RoleId] ASC);
+
 GO
 
 CREATE TABLE [dbo].[AspNetUsers] (
@@ -83,7 +120,11 @@ CREATE TABLE [dbo].[AspNetUsers] (
 GO
 CREATE UNIQUE NONCLUSTERED INDEX [UserNameIndex]
     ON [dbo].[AspNetUsers]([UserName] ASC);
+
 GO
+/*end of pre create*/
+
+
 
 CREATE PROCEDURE [dbo].[calculateAvgRating]
 	@game INT
@@ -242,16 +283,6 @@ AS
 	SELECT RoleId
 	FROM dbo.AspNetUserRoles
 	WHERE UserId = @id
-GO
-
-CREATE PROCEDURE [dbo].[loadCommonts]
-	@gid int
-AS
-	SELECT c.*, a.Email
-	FROM Commonts  c,
-		 AspNetUsers  a
-	WHERE c.votedUserId = a.Id AND
-		gameId = @gid
 GO
 
 CREATE PROCEDURE [dbo].[addGame]
