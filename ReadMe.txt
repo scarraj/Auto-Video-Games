@@ -12,4 +12,8 @@ How to edit Auto-Video-Games (for developers)
 3. Run the CSE201 fulldatabase.sql file in Visual Studios.
 4. Push edited files to the Github repository.
 
+How to login the administrator
+Username: admin@admin.com
+Password: `12Password
+
 The website will build and launch using the default browser
